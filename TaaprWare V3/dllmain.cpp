@@ -27,7 +27,7 @@ void refresh_state() {
 			break;
 		}
 	}
-	printf("DataModel: %X\n", datamodel);
+	printf("DataModel: %p\n", datamodel);
 	printf("Getting ScriptContext...\n");
 	objects::instance* scriptcontext = NULL;
 	for (std::shared_ptr<objects::instance> instance : *(datamodel->children)) {
@@ -35,7 +35,7 @@ void refresh_state() {
 			scriptcontext = instance.get();
 		}
 	}
-	printf("ScriptContext: %X\n", scriptcontext);
+	printf("ScriptContext: %p\n", scriptcontext);
 	state = offsets::scriptcontext::get_scriptstate(reinterpret_cast<uintptr_t>(scriptcontext));
 	printf("Lua state: %X\n", state);
 }
@@ -89,12 +89,13 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 		DWORD original_protection;
 		VirtualProtect(&FreeConsole, sizeof(uint8_t), PAGE_EXECUTE_READWRITE, &original_protection);
 		*(uint8_t*)(&FreeConsole) = 0xC3;
-		VirtualProtect(&FreeConsole, sizeof(uint8_t), PAGE_EXECUTE_READWRITE, &original_protection);
-		FILE** stream{};
-		freopen_s(stream, "CONOUT$", "w", stdout);
-		freopen_s(stream, "CONIN$", "r", stdin);
+		VirtualProtect(&FreeConsole, sizeof(uint8_t), original_protection, NULL);
+		AllocConsole();
+		FILE* stream;
+		freopen_s(&stream, "CONIN$", "r", stdin);
+		freopen_s(&stream, "CONOUT$", "w", stdout);
 #endif
-		CreateThread(NULL, 0, reinterpret_cast<PTHREAD_START_ROUTINE>(main), NULL, 0, NULL);
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)(main), NULL, 0, NULL);
     }
     return TRUE;
 }

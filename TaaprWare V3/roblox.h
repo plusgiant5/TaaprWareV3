@@ -5,14 +5,19 @@
 #include <vector>
 #include <shared_mutex>
 
+// Fake precompressed bytecode we feed into luavm_load
+// Find it by breakpointing luavm_load or getting a script's bytecode
+// The following is precompressed bytecode from a hello world script
+std::string dummy_bytecode = "a\0b";
+
 const uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandle(NULL));
 
 namespace addresses {
 	const uintptr_t getscheduler = base + 0x732250;
-	const uintptr_t task_defer = base + 0x732250; // This could be any function that pops a function from the Luau stack and calls it. Defer is one of them. Also note that task.defer silently logs suspicious calls
-	const uintptr_t luavm_load = base + 0x732250;
-	const uintptr_t luavm_load_bytecode_hook = base + 0x732250;
-	const uintptr_t luavm_load_hashcheck_hook = base + 0x732250;
+	const uintptr_t task_defer = base + 0x3E9260; // This could be any function that pops a function from the Luau stack and calls it. Defer is one of them. Also note that task.defer silently logs suspicious calls
+	const uintptr_t luavm_load = base + 0x3721C0;
+	const uintptr_t luavm_load_bytecode_hook = base + 0x375370;
+	const uintptr_t luavm_load_hashcheck_hook = base + 0x375344;
 }
 
 namespace offsets {
@@ -20,9 +25,6 @@ namespace offsets {
 		uintptr_t get_scriptstate(uintptr_t scriptcontext) {
 			return scriptcontext + 0xEC + *(uintptr_t *)(scriptcontext + 0xEC); // Every encryption changes every week
 		}
-	}
-	namespace scriptcontext {
-
 	}
 }
 
