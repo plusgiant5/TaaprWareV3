@@ -53,7 +53,7 @@ void refresh_state() {
 	// This navigates to L->userdata aka extra space
 	// Then navigates to userdata->identity
 	// Userdata/extra space is every Roblox-related attribute to lua states
-	*reinterpret_cast<int*>(*reinterpret_cast<uintptr_t*>(state + 0x48) + 0x1C) = RAISE_IDENTITY;
+	*reinterpret_cast<int*>(*reinterpret_cast<uintptr_t*>(state + 0x48) + 0x18) = RAISE_IDENTITY;
 	printf("Raised identity to %d\n", RAISE_IDENTITY);
 #endif
 	Sleep(100);
@@ -69,7 +69,7 @@ void execute(std::string source) {
 	options.coverageLevel = 0;
 	options.debugLevel = 1;
 	options.optimizationLevel = 1;
-	std::string compiled = Luau::compile(source, options, {}, &encoder);
+	std::string compiled = Luau::compile("spawn(function() " + source + " end)", options, {}, &encoder);
 	bool success = decompressed_luavm_load(state, compiled);
 	if (success) {
 		printf("Running function\n");
