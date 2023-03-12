@@ -1,6 +1,6 @@
 // Welcome to TaaprWare V3
 
-#define USE_PIPE
+//#define USE_PIPE
 #define USE_CONSOLE
 #define RAISE_IDENTITY 8 // Change the number or comment it out
 
@@ -69,7 +69,7 @@ void execute(std::string source) {
 	options.coverageLevel = 0;
 	options.debugLevel = 1;
 	options.optimizationLevel = 1;
-	std::string compiled = Luau::compile("spawn(function() " + source + " end)", options, {}, &encoder);
+	std::string compiled = Luau::compile(source, options, {}, &encoder);
 	bool success = decompressed_luavm_load(state, compiled);
 	if (success) {
 		printf("Running function\n");
@@ -92,25 +92,26 @@ int main() {
 	refresh_state();
 	// Do whatever you want with the lua state!
 #ifdef USE_PIPE
-	char* buffer = new char[0xFFFFFF];
+	char* buffer = new char[999999];
+	DWORD read_size;
 	std::string source = "";
-	HANDLE pipe = CreateNamedPipeA(
-		"\\\\.\\pipe\\TaaprWareV3",
+	HANDLE pipe = CreateNamedPipeW(
+		L"\\\\.\\pipe\\TaaprWareV3",
 		PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,
 		PIPE_WAIT,
 		1,
-		0xFFFFFF,
-		0xFFFFFF,
+		999999,
+		999999,
 		NMPWAIT_USE_DEFAULT_WAIT,
 		NULL
 	);
+	PurgeComm(pipe, PURGE_RXCLEAR | PURGE_TXCLEAR);
 	while (pipe != INVALID_HANDLE_VALUE) {
 		source = "";
 		if (ConnectNamedPipe(pipe, NULL) != FALSE) {
-			DWORD read_size;
 			while (ReadFile(pipe, buffer, sizeof(buffer) - 1, &read_size, NULL) != FALSE) {
 				buffer[read_size] = '\0';
-				source += buffer;
+				source = source + buffer;
 				if (read_size < sizeof(buffer) - 1) {
 					break;
 				}
@@ -118,7 +119,9 @@ int main() {
 			PurgeComm(pipe, PURGE_RXCLEAR | PURGE_TXCLEAR);
 			execute(source);
 		}
+		DisconnectNamedPipe(pipe);
 	}
+	delete &buffer[999999];
 #else
 	while (true) {
 		printf("Not using pipe, enter script below (no newlines):\n");
@@ -127,6 +130,7 @@ int main() {
 		execute(source);
 	}
 #endif
+	printf("Goodbye!\n");
 }
 
 BOOL APIENTRY DllMain( HMODULE hModule,
