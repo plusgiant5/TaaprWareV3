@@ -5,7 +5,7 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TaaprWare V3", "TaaprWare V3\TaaprWare V3.vcxproj", "{F24E0465-D925-4A00-8FB1-6BD537440FD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AxonSimpleUI", "..\..\..\Downloads\AxonSimpleUI\AxonSimpleUI\AxonSimpleUI.csproj", "{8F588B98-0A75-48CF-86D2-08080AA062FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AxonSimpleUI", "AxonSimpleUI\AxonSimpleUI.csproj", "{8F588B98-0A75-48CF-86D2-08080AA062FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

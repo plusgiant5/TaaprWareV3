@@ -24,6 +24,7 @@
     <ProjectGuid>{f24e0465-d925-4a00-8fb1-6bd537440fd1}</ProjectGuid>
     <RootNamespace>TaaprWareV3</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>TaaprWareV3</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

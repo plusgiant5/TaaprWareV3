@@ -6,7 +6,7 @@ namespace AxonSimpleUI
 {
     class Functions
     {
-        public static string exploitdllname = "Axon.dll";//Axon.dll this is the name of your dll
+        public static string exploitdllname = "TaaprWareV3.dll";//Axon.dll this is the name of your dll
         public static void Inject()
         {
             if (NamedPipes.NamedPipeExist(NamedPipes.luapipename))//check if the pipe exist
