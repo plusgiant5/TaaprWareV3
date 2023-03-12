@@ -1,6 +1,6 @@
 // Welcome to TaaprWare V3
 
-//#define USE_PIPE
+#define USE_PIPE
 #define USE_CONSOLE
 #define RAISE_IDENTITY 8 // Change the number or comment it out
 
@@ -45,7 +45,7 @@ void refresh_state() {
 	}
 	printf("ScriptContext: %p\n", scriptcontext);
 	Sleep(100);
-	// This is how scripts start, skids
+	// This is how scripts start, skids (except TaaprWareV3 doesn't create a thread)
 	state = offsets::scriptcontext::get_scriptstate(reinterpret_cast<uintptr_t>(scriptcontext));
 	printf("Lua state: %X\n", state);
 	Sleep(100);
@@ -90,11 +90,12 @@ int main() {
 	printf("TaaprWare V3 has begun!\n");
 	Sleep(100);
 	refresh_state();
+	// Do whatever you want with the lua state!
 #ifdef USE_PIPE
 	char* buffer = new char[0xFFFFFF];
 	std::string source = "";
 	HANDLE pipe = CreateNamedPipeA(
-		"\\\\.\\pipe\\Hydra",
+		"\\\\.\\pipe\\TaaprWareV3",
 		PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,
 		PIPE_WAIT,
 		1,
