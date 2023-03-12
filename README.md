@@ -2,4 +2,4 @@
 
 Discord (real exploits here): https://discord.gg/nAEHrW9EF9
 
-Making basic execution available to every learning developer
+Making basic bytecode conversion available again to every learning developer
