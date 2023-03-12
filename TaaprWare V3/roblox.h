@@ -6,9 +6,9 @@
 #include <shared_mutex>
 
 // Fake precompressed bytecode we feed into luavm_load
-// Find it by breakpointing luavm_load or getting a script's bytecode
+// Find it by breakpointing luavm_load or getting a script's ProtectedString bytecode
 // The following is precompressed bytecode from a hello world script
-std::string dummy_bytecode = "a\0b";
+const std::string dummy_bytecode = "\x1B\x7B\x56\x24\xA3\xCC\xB8\xB9\xB9\xC5\x73\xA0\x15\x5A\x1D\x03\xD9\x2A\x60\xAB\x6A\xFC\x61\x54\x58\x15\x64\x5A\x54\x7D\x66\x5E\x3F\x39\x62\xCA\xD4\x7F\xE9\x25\x3C\x7C\x51\x2E\xAA\xC3\x81\x56\xC2\x2D\x63\x1B\x40\xE1\xB2\xA6\x97\x74\xF3\x30\x1F\x65\x10\xDE\xA4\x66\x08\x8C\x3D\x85\x70\xE1\xD3\x13\xB8\xF6\x74\xB8\x42\x40\x19\x7B\xE4\x47\x00";
 
 const uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandle(NULL));
 
@@ -22,13 +22,23 @@ namespace addresses {
 
 namespace offsets {
 	namespace scriptcontext {
-		uintptr_t get_scriptstate(uintptr_t scriptcontext) {
+		constexpr uintptr_t get_scriptstate(uintptr_t scriptcontext) {
 			return scriptcontext + 0xEC + *(uintptr_t *)(scriptcontext + 0xEC); // Every encryption changes every week
 		}
 	}
+	namespace state {
+		constexpr int top = 0x10; // Luau offsets change every week
+	}
+	// These only change when roblox makes changes to luavm_load
+	// Find them using your disassembler
+	namespace luavm_load_stackframe {
+		// Because I can't type the whole namespace paths in inline assembly
+		#define offsets__luavm_load_stackframe__bytecode -0x164
+		#define offsets__luavm_load_stackframe__bytecode_len -0x60
+	}
 }
 
-// Might as well paste from V2 here
+// Might as well paste from V2
 namespace objects {
 	typedef struct instance instance;
 	typedef struct job job;
@@ -59,11 +69,6 @@ namespace objects {
 		std::string name;
 		uintptr_t datamodel_minus_4; // add 4 then cast to rbx::objects::instance* to get datamodel
 	};
-	constexpr int x = offsetof(instance, name);
-	struct waiting_hybrid_scripts_job {
-		char padding1[0x130];
-		instance* script_context;
-	};
 	struct task_scheduler {
 		char padding1[0x118];
 		double fps;
@@ -75,10 +80,10 @@ namespace objects {
 namespace functions {
 	namespace types {
 		typedef objects::task_scheduler*(__cdecl* getscheduler)();
-		typedef bool(__fastcall* luavm_load)(IN uintptr_t state, IN std::string* compressed_bytecode, IN const char* chunkname, IN OPTIONAL int env);
+		typedef int(__fastcall* luavm_load)(IN uintptr_t state, IN std::string* compressed_bytecode, IN const char* chunkname, IN OPTIONAL int env);
 		typedef int(__cdecl* task_defer)(IN uintptr_t state);
 	}
-	types::getscheduler getscheduler = reinterpret_cast<types::getscheduler>(addresses::getscheduler);
-	types::luavm_load luavm_load = reinterpret_cast<types::luavm_load>(addresses::luavm_load);
-	types::task_defer task_defer = reinterpret_cast<types::task_defer>(addresses::task_defer);
+	const types::getscheduler getscheduler = reinterpret_cast<types::getscheduler>(addresses::getscheduler);
+	const types::luavm_load luavm_load = reinterpret_cast<types::luavm_load>(addresses::luavm_load);
+	const types::task_defer task_defer = reinterpret_cast<types::task_defer>(addresses::task_defer);
 }
