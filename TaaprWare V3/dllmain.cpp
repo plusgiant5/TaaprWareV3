@@ -65,6 +65,7 @@ class : public Luau::BytecodeEncoder {
 	}
 } encoder{};
 void execute(std::string source) {
+	uintptr_t old_top = *reinterpret_cast<uintptr_t*>(state + offsets::state::top);
 	Luau::CompileOptions options{};
 	options.coverageLevel = 0;
 	options.debugLevel = 1;
@@ -75,15 +76,13 @@ void execute(std::string source) {
 		printf("Running function\n");
 		// If you're a beginner, luavm_load pushes a function onto the lua state's stack
 		// task.defer (or any other function like it) takes a function from the stack and runs it
-		int retnum = functions::task_defer(state);
-		// All C functions return the number of returns on the Luau side
-		// Based on the number of returns, we clean the stack using our only Luau offset
-		*reinterpret_cast<uintptr_t*>(state + offsets::state::top) -= retnum * 16; // 16 is sizeof(TValue)
+		functions::task_defer(state);
 		printf("Execution success\n");
 	} else {
 		printf("Not running function because luavm_load failed\n");
 		printf("Execution failed\n");
 	}
+	*reinterpret_cast<uintptr_t*>(state + offsets::state::top) = old_top; // Return the stack to normal so that other exploit scripts AND other Roblox scripts are able to run correctly
 }
 
 int main() {
