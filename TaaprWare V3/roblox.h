@@ -13,28 +13,28 @@ const std::string dummy_bytecode = "\x1B\x7B\x56\x24\xA3\xCC\xB8\xB9\xB9\xC5\x73
 const uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandle(NULL));
 
 namespace addresses {
-	const uintptr_t getscheduler = base + 0x732250;
-	const uintptr_t task_defer = base + 0x3E9260; // This could be any function that pops a function from the Luau stack and calls it. Defer is one of them. Also note that task.defer silently logs suspicious calls
-	const uintptr_t luavm_load = base + 0x3721C0;
-	const uintptr_t luavm_load_bytecode_hook = base + 0x375370;
-	const uintptr_t luavm_load_hashcheck_hook = base + 0x375344;
+	const uintptr_t getscheduler = base + 0x73E970;
+	const uintptr_t task_defer = base + 0x3ED4E0; // This could be any function that pops a function from the Luau stack and calls it. Defer is one of them. Also note that task.defer silently logs suspicious calls
+	const uintptr_t luavm_load = base + 0x3743E0;
+	const uintptr_t luavm_load_bytecode_hook = base + 0x377540;
+	const uintptr_t luavm_load_hashcheck_hook = base + 0x377514;
 }
 
 namespace offsets {
 	namespace scriptcontext {
 		constexpr uintptr_t get_scriptstate(uintptr_t scriptcontext) {
-			return scriptcontext + 0xEC + *(uintptr_t *)(scriptcontext + 0xEC); // Every encryption changes every week
+			return scriptcontext + 0xEC - *(uintptr_t *)(scriptcontext + 0xEC); // Every encryption changes every week
 		}
 	}
 	namespace state {
-		constexpr int top = 0x10; // Luau offsets change every week
+		constexpr int top = 0x14; // Luau offsets change every week
 	}
 	// These only change when roblox makes changes to luavm_load
 	// Find them using your disassembler
 	namespace luavm_load_stackframe {
 		// Because I can't type the whole namespace paths in inline assembly
-		#define offsets__luavm_load_stackframe__bytecode -0x164
-		#define offsets__luavm_load_stackframe__bytecode_len -0x60
+		#define offsets__luavm_load_stackframe__bytecode -0x15C
+		#define offsets__luavm_load_stackframe__bytecode_len -0x78
 	}
 }
 
