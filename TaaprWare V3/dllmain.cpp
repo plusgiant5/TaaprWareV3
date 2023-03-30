@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include <iostream>
 
-#include <Luau\BytecodeBuilder.h>
-#include <Luau\Compiler.h>
+#include "include\Luau\BytecodeBuilder.h"
+#include "include\Luau\Compiler.h"
 
 #include "roblox.h"
 #include "luavm_load_hook.h"
