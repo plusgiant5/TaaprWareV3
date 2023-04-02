@@ -13,11 +13,11 @@ const std::string dummy_bytecode = "\x1B\x7B\x56\x24\xA3\xCC\xB8\xB9\xB9\xC5\x73
 const uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandle(NULL));
 
 namespace addresses {
-	const uintptr_t getscheduler = base + 0x730C90;
-	const uintptr_t task_defer = base + 0x3D6410; // This could be any function that pops a function from the Luau stack and calls it. Defer is one of them. Also note that task.defer silently logs suspicious calls
-	const uintptr_t luavm_load = base + 0x35B900;
-	const uintptr_t luavm_load_bytecode_hook = base + 0x35EAE0;
-	const uintptr_t luavm_load_hashcheck_hook = base + 0x35EAB4;
+	const uintptr_t getscheduler = base + 0x727860;
+	const uintptr_t task_defer = base + 0x3CCDD0; // This could be any function that pops a function from the Luau stack and calls it. Defer is one of them. Also note that task.defer silently logs suspicious calls
+	const uintptr_t luavm_load = base + 0x3522A0;
+	const uintptr_t luavm_load_bytecode_hook = base + 0x355480;
+	const uintptr_t luavm_load_hashcheck_hook = base + 0x355454;
 }
 
 namespace offsets {
@@ -34,7 +34,7 @@ namespace offsets {
 	namespace luavm_load_stackframe {
 		// Because I can't type the whole namespace paths in inline assembly
 		#define offsets__luavm_load_stackframe__bytecode -0x164
-		#define offsets__luavm_load_stackframe__bytecode_len -0x78
+		#define offsets__luavm_load_stackframe__bytecode_len -0x6C
 	}
 }
 
