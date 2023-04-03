@@ -91,36 +91,35 @@ int main() {
 	refresh_state();
 	// Do whatever you want with the lua state!
 #ifdef USE_PIPE
-	char* buffer = new char[999999];
+	std::unique_ptr<char[]> buffer(new char[65536]);
 	DWORD read_size;
-	std::string source = "";
 	HANDLE pipe = CreateNamedPipeW(
 		L"\\\\.\\pipe\\TaaprWareV3",
 		PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,
 		PIPE_WAIT,
 		1,
-		999999,
-		999999,
+		65536,
+		65536,
 		NMPWAIT_USE_DEFAULT_WAIT,
 		NULL
 	);
+	if (pipe == INVALID_HANDLE_VALUE) {
+		printf("[ERROR] Failed to create pipe!\n");
+		return;
+	}
 	PurgeComm(pipe, PURGE_RXCLEAR | PURGE_TXCLEAR);
-	while (pipe != INVALID_HANDLE_VALUE) {
-		source = "";
-		if (ConnectNamedPipe(pipe, NULL) != FALSE) {
-			while (ReadFile(pipe, buffer, sizeof(buffer) - 1, &read_size, NULL) != FALSE) {
-				buffer[read_size] = '\0';
-				source = source + buffer;
-				if (read_size < sizeof(buffer) - 1) {
-					break;
-				}
+	while (ConnectNamedPipe(pipe, NULL) != FALSE) {
+		std::vector<char> source;
+		while (ReadFile(pipe, buffer.get(), 65536, &read_size, NULL) != FALSE) {
+			source.insert(source.end(), buffer.get(), buffer.get() + read_size);
+			if (read_size < 65536) {
+				break;
 			}
-			PurgeComm(pipe, PURGE_RXCLEAR | PURGE_TXCLEAR);
-			execute(source);
 		}
+		PurgeComm(pipe, PURGE_RXCLEAR | PURGE_TXCLEAR);
+		execute(std::string(source.begin(), source.end()));
 		DisconnectNamedPipe(pipe);
 	}
-	delete &buffer[999999];
 #else
 	while (true) {
 		printf("Not using pipe, enter script below (no newlines):\n");
