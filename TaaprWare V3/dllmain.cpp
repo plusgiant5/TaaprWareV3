@@ -104,7 +104,7 @@ int main() {
 		NULL
 	);
 	if (pipe == INVALID_HANDLE_VALUE) {
-		printf("[ERROR] Failed to create pipe!\n");
+		printf("[ERROR] Failed to create pipe! Error code: %d\n", GetLastError());
 		return;
 	}
 	PurgeComm(pipe, PURGE_RXCLEAR | PURGE_TXCLEAR);
