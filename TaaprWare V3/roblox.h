@@ -13,28 +13,28 @@ const std::string dummy_bytecode = "\x1B\x7B\x56\x24\xA3\xCC\xB8\xB9\xB9\xC5\x73
 const uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandle(NULL));
 
 namespace addresses {
-	const uintptr_t getscheduler = base + 0x727860;
-	const uintptr_t task_defer = base + 0x3CCDD0; // This could be any function that pops a function from the Luau stack and calls it. Defer is one of them. Also note that task.defer silently logs suspicious calls
-	const uintptr_t luavm_load = base + 0x3522A0;
-	const uintptr_t luavm_load_bytecode_hook = base + 0x355480;
-	const uintptr_t luavm_load_hashcheck_hook = base + 0x355454;
+	const uintptr_t getscheduler = base + 0x72d460;
+	const uintptr_t task_defer = base + 0x3d0ed0; // This could be any function that pops a function from the Luau stack and calls it. Defer is one of them. Also note that task.defer silently logs suspicious calls
+	const uintptr_t luavm_load = base + 0x3561b0;
+	const uintptr_t luavm_load_bytecode_hook = base + 0x359350;
+	const uintptr_t luavm_load_hashcheck_hook = base + 0x359324;
 }
 
 namespace offsets {
 	namespace scriptcontext {
 		constexpr uintptr_t get_scriptstate(uintptr_t scriptcontext) {
-			return *(uintptr_t*)(scriptcontext + 0xEC) - (scriptcontext + 0xEC); // Every encryption changes every week
+			return *(uintptr_t*)(scriptcontext + 0xF4) - (scriptcontext + 0xF4); // Every encryption changes every week
 		}
 	}
 	namespace state {
-		constexpr int top = 0x8; // Luau offsets change every week
+		constexpr int top = 0x18; // Luau offsets change every week
 	}
 	// These only change when roblox makes changes to luavm_load
 	// Find them using your disassembler
 	namespace luavm_load_stackframe {
 		// Because I can't type the whole namespace paths in inline assembly
 		#define offsets__luavm_load_stackframe__bytecode -0x164
-		#define offsets__luavm_load_stackframe__bytecode_len -0x6C
+		#define offsets__luavm_load_stackframe__bytecode_len -0x5c
 	}
 }
 
@@ -56,12 +56,13 @@ namespace objects {
 		uintptr_t* vftable;
 		std::shared_ptr<instance> self;
 		class_descriptor* class_descriptor;
-		char padding1[0x18];
+		char padding1[0x1C];
 		std::string* name;
 		std::vector<std::shared_ptr<instance>>* children;
 		char padding2[0x4];
 		instance* parent;
 	};
+	constexpr int x = offsetof(instance, children);
 	struct job {
 		uintptr_t* vftable;
 		job* self;
