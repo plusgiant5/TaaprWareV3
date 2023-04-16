@@ -18,4 +18,5 @@ If you want to make custom functions (without abusing mid hooks or using tempora
 2. Get the global table using a lua state offset
 3. Create the string which should be the name of the function using string offsets
 4. Write to the global table using table offsets, setting the key at the string you created to the closure you created
+
 Implementing this in this repo would double or triple the amount of code, would be harder to maintain, and would be very confusing for beginners.
