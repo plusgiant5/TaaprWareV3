@@ -13,11 +13,11 @@ const std::string dummy_bytecode = "\x1B\x7B\x56\x24\xA3\xCC\xB8\xB9\xB9\xC5\x73
 const uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandle(NULL));
 
 namespace addresses {
-	const uintptr_t getscheduler = base + 0x726840;
-	const uintptr_t task_defer = base + 0x3D1470; // This could be any function that pops a function from the Luau stack and calls it. Defer is one of them. Also note that task.defer silently logs suspicious calls
-	const uintptr_t luavm_load = base + 0x34ABB0;
-	const uintptr_t luavm_load_bytecode_hook = base + 0x34DE21;
-	const uintptr_t luavm_load_hashcheck_hook = base + 0x34DDF5;
+	const uintptr_t getscheduler = base + 0x7320B0;
+	const uintptr_t task_defer = base + 0x3DC560; // This could be any function that pops a function from the Luau stack and calls it. Defer is one of them. Also note that task.defer silently logs suspicious calls
+	const uintptr_t luavm_load = base + 0x356B40;
+	const uintptr_t luavm_load_bytecode_hook = base + 0x359CF0;
+	const uintptr_t luavm_load_hashcheck_hook = base + 0x359CC4;
 }
 
 namespace offsets {
@@ -27,14 +27,14 @@ namespace offsets {
 		}
 	}
 	namespace state {
-		constexpr int top = 0x14; // Luau offsets change every week
+		constexpr int top = 0xC; // Luau offsets change every week
 	}
 	// These only change when roblox makes changes to luavm_load
 	// Find them using your disassembler
 	namespace luavm_load_stackframe {
 		// Because I can't type the whole namespace paths in inline assembly
 		#define offsets__luavm_load_stackframe__bytecode -0x164
-		#define offsets__luavm_load_stackframe__bytecode_len -0x6c
+		#define offsets__luavm_load_stackframe__bytecode_len -0x5C
 	}
 }
 
