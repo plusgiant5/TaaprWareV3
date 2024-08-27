@@ -2,7 +2,7 @@ BYFRON IS OUT, BUT IM BYPASSING IT LOL
 
 # TaaprWare V3
 
-Discord (real exploits here): https://discord.gg/nAEHrW9EF9
+Discord (real exploits here): https://discord.gg/kj9cN9MfR4 (NEW)
 
 Making basic bytecode conversion available again to every learning developer
 
